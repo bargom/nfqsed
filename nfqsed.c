@@ -257,7 +257,7 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
         }
         else {
            int count = 0;
-           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size);) != NULL) {
+           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
                 if (verbose) {
                     printf("rule match, changing payload with rule(%d): ", ++count);
                     print_rule(rule);
