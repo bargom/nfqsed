@@ -248,18 +248,18 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     
     while (rule) {
         // check if it is already replaced
-        if (findSecond(rule, tcp_payload, len - ip_size - tcp_size) == NULL) {
-            while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
-                if (verbose) {
-                    printf("rule match, changing payload: ");
-                    print_rule(rule);
-                }
-                memcpy(pos, rule->val2, rule->length2);
+        if ((pos = findSecond(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
+             if (verbose) {
+                printf("rule match BUT already replaced, no-change in payload");
             }
         }
         else {
-            if (verbose) {
-                printf("rule match BUT already replaced, no-change in payload");
+           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
+                if (verbose) {
+                    printf("rule match, changing payload with rule: ");
+                    print_rule(rule);
+                }
+                memcpy(pos, rule->val2, rule->length2);
             }
         }
         rule = rule->next;
