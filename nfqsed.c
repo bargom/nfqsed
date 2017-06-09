@@ -197,33 +197,12 @@ uint8_t *find(const struct rule_t *rule, uint8_t *payload, int payload_length)
     return NULL;
 }
 
-uint8_t *findSecond(const struct rule_t *rule, uint8_t *payload, int payload_length)
-{
-    int rule_len = rule->length2;
-    int i = 0, j = 0, match = 0;
-    for (i = 0 ; i < payload_length - rule_len ; i++) {
-        match = 1;
-        for (j = 0 ; j < rule_len ; j++) {
-            if (payload[i+j] != rule->val2[j]) {
-                match = 0;
-                break;
-            }
-        }
-        if (match) {
-            puts("\findsecond: nmatched\n");
-            return payload + i;
-        }
-    }
-    puts("\nfindsecond: NULL\n");
-    return NULL;
-}
-
 static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
               struct nfq_data *nfa, void *data)
 {
     int id = 0, len = 0;
     struct nfqnl_msg_packet_hdr *ph;
-    uint8_t *payload=NULL, *tcp_payload, *pos;
+    uint8_t *payload=NULL, *tcp_payload, *pos, *pos1;
     struct ip_hdr *ip;
     struct tcp_hdr *tcp;
     uint16_t ip_size = 0, tcp_size = 0;
@@ -249,21 +228,13 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     tcp_payload = (uint8_t*)(payload + ip_size + tcp_size);
     
     while (rule) {
-        // check if it is already replaced
-        if (findSecond(rule, tcp_payload, len - ip_size - tcp_size) != NULL) {
-             if (verbose) {
-                printf("rule match BUT already replaced, no-change in payload");
+        // todo: change it to continous replace again from the last position.
+        if ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
+            if (verbose) {
+                printf("rule match, changing payload (once): ");
+                print_rule(rule);
             }
-        }
-        else {
-           int count = 0;
-           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
-                if (verbose) {
-                    printf("rule match, changing payload with rule(%d): ", ++count);
-                    print_rule(rule);
-                }
-                memcpy(pos, rule->val2, rule->length2);
-            }
+            memcpy(pos, rule->val2, rule->length);
         }
         rule = rule->next;
     }
