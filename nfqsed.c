@@ -82,11 +82,11 @@ void usage()
 void print_rule(const struct rule_t *rule)
 {
     int i = 0;
-    for (i = 0 ; i < rule->length ; i++) {
+    for (i = 0 ; i < rule->length1 ; i++) {
         printf("%c", rule->val1[i]);
     }
     printf(" -> ");
-    for (i = 0 ; i < rule->length ; i++) {
+    for (i = 0 ; i < rule->length2 ; i++) {
         printf("%c", rule->val2[i]);
     }
     printf("\n");
@@ -180,7 +180,7 @@ uint16_t tcp_sum(uint16_t len_tcp, uint16_t *src_addr, uint16_t *dest_addr, uint
 
 uint8_t *find(const struct rule_t *rule, uint8_t *payload, int payload_length)
 {
-    int rule_len = rule->length;
+    int rule_len = rule->length1;
     int i = 0, j = 0, match = 0;
     for (i = 0 ; i < payload_length - rule_len ; i++) {
         match = 1;
@@ -233,7 +233,7 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
                 printf("rule match, changing payload: ");
                 print_rule(rule);
             }
-            memcpy(pos, rule->val2, rule->length);
+            memcpy(pos, rule->val2, rule->length2);
         }
         rule = rule->next;
     }
@@ -341,4 +341,3 @@ int main(int argc, char *argv[])
     read_queue();
     return 0;
 }
-
