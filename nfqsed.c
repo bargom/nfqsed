@@ -206,21 +206,21 @@ uint8_t *findSecond(const struct rule_t *rule, uint8_t *payload, int payload_len
         print((char*)payload[i+j]);
         for (j = 0 ; j < rule_len ; j++) {
             if (payload[i+j] != rule->val2[j]) {
-                print("\nmatch broken");
-                print((char*) payload[i+j]);
-                print("!=");
-                print((char*) rule->val2[j]);
-                print("\n");
+                printf("\nmatch broken");
+                printf((char*) payload[i+j]);
+                printf("!=");
+                printf((char*) rule->val2[j]);
+                printf("\n");
                 match = 0;
                 break;
             }
         }
         if (match) {
-            print("\nmatched\n");
+            printf("\nmatched\n");
             return payload + i;
         }
     }
-    print("\nNULL\n");
+    printf("\nNULL\n");
     return NULL;
 }
 
