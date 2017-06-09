@@ -203,9 +203,10 @@ uint8_t *findSecond(const struct rule_t *rule, uint8_t *payload, int payload_len
     int i = 0, j = 0, match = 0;
     for (i = 0 ; i < payload_length - rule_len ; i++) {
         match = 1;
+        print((char*)payload[i+j]);
         for (j = 0 ; j < rule_len ; j++) {
             if (payload[i+j] != rule->val2[j]) {
-                printf("match broken %c!=%c", payload[i+j], rule->val2[j]);
+                printf("\nmatch broken %c!=%c\n",(char*) payload[i+j],(char*) rule->val2[j]);
                 match = 0;
                 break;
             }
