@@ -21,11 +21,14 @@ forwarded packets that have destination port 554:
 
     # iptables -A FORWARD -p tcp --destination-port 554 -j NFQUEUE --queue-num 0
     # nfqsed -s /foo/bar -s /good/evil
+    
+Now supports:
+----------------
+Different length of search and replace strings. The search&replace is done only once on the payload, to support the same start characters for search and replace string. Example: Finding foo and overwriting to foo123.
+    
+    # nfqsed -s /foo/foo123
 
 TODO
 ----
  * UDP support
- * different lengths of val1 and val2
  * binary rules
-
-[1]: http://xakcop.com/post/mitm-stb/ 
