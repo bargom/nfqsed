@@ -250,7 +250,6 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     while (rule) {
         // check if it is already replaced
         pos = findSecond(rule, tcp_payload, len - ip_size - tcp_size);
-        printf("second:%x",pos);
         if (pos != NULL) {
              if (verbose) {
                 printf("rule match BUT already replaced, no-change in payload");
@@ -258,7 +257,6 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
         }
         else {
            pos = find(rule, tcp_payload, len - ip_size - tcp_size);
-           printf("first:%x",pos);
            while (pos != NULL) {
                 if (verbose) {
                     printf("rule match, changing payload with rule: ");
