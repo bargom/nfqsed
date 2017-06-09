@@ -205,6 +205,7 @@ uint8_t *findSecond(const struct rule_t *rule, uint8_t *payload, int payload_len
         match = 1;
         for (j = 0 ; j < rule_len ; j++) {
             if (payload[i+j] != rule->val2[j]) {
+                printf("match broken %c!=%c", payload[i+j], rule->val2[j]);
                 match = 0;
                 break;
             }
@@ -248,13 +249,17 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     
     while (rule) {
         // check if it is already replaced
-        if ((pos = findSecond(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
+        pos = findSecond(rule, tcp_payload, len - ip_size - tcp_size);
+        printf("second:%d",pos);
+        if (pos != NULL) {
              if (verbose) {
                 printf("rule match BUT already replaced, no-change in payload");
             }
         }
         else {
-           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size)) != NULL) {
+           pos = find(rule, tcp_payload, len - ip_size - tcp_size);
+           printf("first:%d",pos);
+           while (pos != NULL) {
                 if (verbose) {
                     printf("rule match, changing payload with rule: ");
                     print_rule(rule);
