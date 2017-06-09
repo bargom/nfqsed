@@ -203,24 +203,18 @@ uint8_t *findSecond(const struct rule_t *rule, uint8_t *payload, int payload_len
     int i = 0, j = 0, match = 0;
     for (i = 0 ; i < payload_length - rule_len ; i++) {
         match = 1;
-        puts((char*)payload[i+j]);
         for (j = 0 ; j < rule_len ; j++) {
             if (payload[i+j] != rule->val2[j]) {
-                puts("\nmatch broken");
-                puts((char*) payload[i+j]);
-                puts("!=");
-                puts((char*) rule->val2[j]);
-                puts("\n");
                 match = 0;
                 break;
             }
         }
         if (match) {
-            puts("\nmatched\n");
+            puts("\findsecond: nmatched\n");
             return payload + i;
         }
     }
-    puts("\nNULL\n");
+    puts("\nfindsecond: NULL\n");
     return NULL;
 }
 
@@ -256,21 +250,16 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
     
     while (rule) {
         // check if it is already replaced
-        pos = findSecond(rule, tcp_payload, len - ip_size - tcp_size);
-        puts("findSecond");
-        puts(pos);
-        if (pos != NULL) {
+        if (findSecond(rule, tcp_payload, len - ip_size - tcp_size) != NULL) {
              if (verbose) {
                 printf("rule match BUT already replaced, no-change in payload");
             }
         }
         else {
-           pos = find(rule, tcp_payload, len - ip_size - tcp_size);
-           puts("find");
-           puts(pos);
-           while (pos != NULL) {
+           int count = 0;
+           while ((pos = find(rule, tcp_payload, len - ip_size - tcp_size);) != NULL) {
                 if (verbose) {
-                    printf("rule match, changing payload with rule: ");
+                    printf("rule match, changing payload with rule(%d): ", ++count);
                     print_rule(rule);
                 }
                 memcpy(pos, rule->val2, rule->length2);
