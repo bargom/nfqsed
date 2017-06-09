@@ -82,21 +82,23 @@ void print_rule(const struct rule_t *rule)
 {
     int i = 0;
     for (i = 0 ; i < rule->length ; i++) {
-        printf("%x", rule->val1[i]);
+        printf("%c", rule->val1[i]);
     }
     printf(" -> ");
     for (i = 0 ; i < rule->length ; i++) {
-        printf("%x", rule->val2[i]);
+        printf("%c", rule->val2[i]);
     }
     printf("\n");
 }
 
 void add_rule(const char *rule_str)
 {
+    printf("add_rule called");
     char delim = rule_str[0];
     char *pos = NULL;
-    int length = 0;
+    int length2 = 0;
     struct rule_t *rule;
+    int length1 = 0;
     if (strlen(rule_str) < 4) {
         fprintf(stderr, "rule too short: %s\n", rule_str);
         exit(1);
@@ -106,17 +108,15 @@ void add_rule(const char *rule_str)
         fprintf(stderr, "incorrect rule: %s\n", rule_str);
         exit(1);
     }
-    length = strlen(pos+1);
-    if (pos - rule_str - 1 != length) {
-        fprintf(stderr, "val1 and val2 must be the same length: %s\n", rule_str);
-        exit(1);
-    }
+    length2 = strlen(pos+1);
+    length1 = strlen(rule_str) - length2 - 2;
     rule = malloc(sizeof(struct rule_t));
-    rule->val1 = malloc(length);
-    memcpy(rule->val1, rule_str + 1, length);
-    rule->val2 = malloc(length);
-    memcpy(rule->val2, pos + 1, length);
-    rule->length = length;
+    rule->val1 = malloc(length1);
+    memcpy(rule->val1, rule_str + 1, length1);
+    rule->val2 = malloc(length2);
+    memcpy(rule->val2, pos + 1, length2);
+    rule->length1 = length1;
+    rule->length2 = length2;
     rule->next = NULL;
     if (rules) {
         rule->next = rules;
