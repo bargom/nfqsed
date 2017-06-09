@@ -60,7 +60,8 @@ struct tcp_hdr {
 struct rule_t {
     uint8_t *val1;
     uint8_t *val2;
-    int length;
+    int length1;
+    int length2;
     struct rule_t *next;
 };
 
