@@ -202,7 +202,7 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
 {
     int id = 0, len = 0;
     struct nfqnl_msg_packet_hdr *ph;
-    uint8_t *payload=NULL, *tcp_payload, *pos, *pos1;
+    uint8_t *payload=NULL, *tcp_payload, *pos;
     struct ip_hdr *ip;
     struct tcp_hdr *tcp;
     uint16_t ip_size = 0, tcp_size = 0;
@@ -234,7 +234,7 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
                 printf("rule match, changing payload (once): ");
                 print_rule(rule);
             }
-            memcpy(pos, rule->val2, rule->length);
+            memcpy(pos, rule->val2, rule->length2);
         }
         rule = rule->next;
     }
